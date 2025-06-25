@@ -1,0 +1,57 @@
+* change /usr/local/share/pdk/ to your PDK_ROOT
+.lib '/usr/local/share/pdk/sky130A/libs.tech/ngspice/sky130.lib.spice' tt
+
+* length/width base units are in microns. For example 500000u=500000*10^-6 = 0.5um
+* sky130_fd_pr__nfet_05v0_nvt are native nmos transistors (zero vth nfets in the fig 1 of the paper)
+* sky130_fd_pr__nfet_g5v0d10v5 are used as the diode connected devices (rather than pfets)
+* this design uses well isolation so that nfets can be used in diode connected devices
+* device details for SKY130 can be found here: https://skywater-pdk.readthedocs.io/en/main/rules/device-details.html
+
+* nfet: drain, gate, source, body
+* pfet: source, gate, drain, body
+
+.subckt vref_gen_nmos_with_trim trim10 trim9 trim8 trim7 trim6 trim5 trim4 trim3 trim2 trim1 vpwr vref vgnd
+
+X14 vpwr trim1  pc1  vpwr sky130_fd_pr__pfet_01v8 w=3e+06u l=500000u
+X10 vpwr trim2  pc2  vpwr sky130_fd_pr__pfet_01v8 w=3e+06u l=500000u
+X35 vpwr trim3  pc3  vpwr sky130_fd_pr__pfet_01v8 w=3e+06u l=500000u
+X30 vpwr trim4  pc4  vpwr sky130_fd_pr__pfet_01v8 w=3e+06u l=500000u
+X32 vpwr trim5  pc5  vpwr sky130_fd_pr__pfet_01v8 w=3e+06u l=500000u
+X33 vpwr trim6  pc6  vpwr sky130_fd_pr__pfet_01v8 w=3e+06u l=500000u
+X13 vpwr trim7  pc7  vpwr sky130_fd_pr__pfet_01v8 w=3e+06u l=500000u
+X31 vpwr trim8  pc8  vpwr sky130_fd_pr__pfet_01v8 w=3e+06u l=500000u
+X18 vpwr trim9  pc9  vpwr sky130_fd_pr__pfet_01v8 w=3e+06u l=500000u
+X34 vpwr trim10 pc10 vpwr sky130_fd_pr__pfet_01v8 w=3e+06u l=500000u
+
+* vref is at the source (drain and source are interchangable)
+X9 vref mcp pc1  vgnd sky130_fd_pr__nfet_05v0_nvt w=30e+06u l=900000u nf=30
+X1 vref mcp pc2  vgnd sky130_fd_pr__nfet_05v0_nvt w=60e+06u l=900000u nf=60
+X4 vref mcp pc3  vgnd sky130_fd_pr__nfet_05v0_nvt w=90e+06u l=900000u nf=90
+X7 vref mcp pc4  vgnd sky130_fd_pr__nfet_05v0_nvt w=120e+06u l=900000u nf=120
+X5 vref mcp pc5  vgnd sky130_fd_pr__nfet_05v0_nvt w=120e+06u l=900000u nf=120
+X2 pc6  mcp vref vgnd sky130_fd_pr__nfet_05v0_nvt w=120e+06u l=900000u nf=120
+X8 pc7  mcp vref vgnd sky130_fd_pr__nfet_05v0_nvt w=120e+06u l=900000u nf=120
+X3 pc8  mcp vref vgnd sky130_fd_pr__nfet_05v0_nvt w=120e+06u l=900000u nf=120
+X0 pc9  mcp vref vgnd sky130_fd_pr__nfet_05v0_nvt w=120e+06u l=900000u nf=120
+X6 pc10 mcp vref vgnd sky130_fd_pr__nfet_05v0_nvt w=120e+06u l=900000u nf=120
+
+
+* this is the diode ladder
+X20 vref vref mcp  mcp  sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X21 mcp  mcp  dc0  dc0  sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X22 dc0  dc0  dc1  dc1  sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X15 dc1  dc1  dc2  dc2  sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X16 dc2  dc2  dc3  dc3  sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X17 dc3  dc3  dc4  dc4  sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X19 dc4  dc4  dc5  dc5  sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X27 dc5  dc5  dc6  dc6  sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X28 dc6  dc6  dc7  dc7  sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X29 dc7  dc7  dc8  dc8  sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X23 dc8  dc8  dc9  dc9  sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X24 dc9  dc9  dc10 dc10 sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X25 dc10 dc10 dc11 dc11 sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X26 dc11 dc11 dc12 dc12 sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X11 dc12 dc12 dc13 dc13 sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+X12 dc13 dc13 vgnd vgnd sky130_fd_pr__nfet_g5v0d10v5 w=2e+06u l=500000u nf=2
+
+.ends
